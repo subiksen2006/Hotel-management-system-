@@ -1,0 +1,116 @@
+import java.util.Scanner;
+
+class HotelManagementSystem {
+    private String[] rooms;
+    private boolean[] roomStatus; // true if booked, false if available
+    private double[] roomPrices;
+    private final int totalRooms = 5;
+
+    // Constructor to initialize the hotel rooms
+    public HotelManagementSystem() {
+        rooms = new String[totalRooms];
+        roomStatus = new boolean[totalRooms];
+        roomPrices = new double[] {100.0, 150.0, 200.0, 250.0, 300.0}; // Room prices
+    }
+
+    // Method to display available rooms
+    public void displayRooms() {
+        System.out.println("Room Number | Status | Price");
+        for (int i = 0; i < totalRooms; i++) {
+            String status = roomStatus[i] ? "Booked" : "Available";
+            System.out.println((i + 1) + "          | " + status + "  | " + roomPrices[i]);
+        }
+    }
+
+    // Method to book a room
+    public void bookRoom(int roomNumber, String customerName) {
+        if (roomNumber > 0 && roomNumber <= totalRooms) {
+            if (!roomStatus[roomNumber - 1]) {
+                roomStatus[roomNumber - 1] = true;
+                rooms[roomNumber - 1] = customerName;
+                System.out.println("Room " + roomNumber + " has been successfully booked for " + customerName);
+            } else {
+                System.out.println("Sorry, Room " + roomNumber + " is already booked.");
+            }
+        } else {
+            System.out.println("Invalid room number.");
+        }
+    }
+
+    // Method to checkout a room
+    public void checkoutRoom(int roomNumber) {
+        if (roomNumber > 0 && roomNumber <= totalRooms) {
+            if (roomStatus[roomNumber - 1]) {
+                roomStatus[roomNumber - 1] = false;
+                System.out.println("Room " + roomNumber + " has been successfully checked out.");
+            } else {
+                System.out.println("Room " + roomNumber + " is not booked.");
+            }
+        } else {
+            System.out.println("Invalid room number.");
+        }
+    }
+
+    // Method to calculate the total cost for a stay
+    public double calculateTotalCost(int roomNumber, int numberOfNights) {
+        if (roomNumber > 0 && roomNumber <= totalRooms) {
+            return roomPrices[roomNumber - 1] * numberOfNights;
+        }
+        return 0.0;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        HotelManagementSystem hotel = new HotelManagementSystem();
+
+        while (true) {
+            System.out.println("\nHotel Management System");
+            System.out.println("1. Display Rooms");
+            System.out.println("2. Book Room");
+            System.out.println("3. Checkout Room");
+            System.out.println("4. Calculate Total Cost");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    hotel.displayRooms();
+                    break;
+                case 2:
+                    System.out.print("Enter room number to book (1-5): ");
+                    int roomNumber = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline
+                    System.out.print("Enter your name: ");
+                    String name = scanner.nextLine();
+                    hotel.bookRoom(roomNumber, name);
+                    break;
+                case 3:
+                    System.out.print("Enter room number to checkout (1-5): ");
+                    roomNumber = scanner.nextInt();
+                    hotel.checkoutRoom(roomNumber);
+                    break;
+                case 4:
+                    System.out.print("Enter room number to calculate cost (1-5): ");
+                    roomNumber = scanner.nextInt();
+                    System.out.print("Enter number of nights: ");
+                    int nights = scanner.nextInt();
+                    double totalCost = hotel.calculateTotalCost(roomNumber, nights);
+                    if (totalCost > 0) {
+                        System.out.println("Total cost for " + nights + " nights: $" + totalCost);
+                    } else {
+                        System.out.println("Invalid room number.");
+                    }
+                    break;
+                case 5:
+                    System.out.println("Exiting the system.");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice, please try again.");
+            }
+        }
+    }
+}
